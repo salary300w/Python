@@ -17,7 +17,7 @@ email_flag = True
 email_addr = "Atm991014@163.com"
 
 # 训练的轮数
-epoch = 150
+epoch = 200
 
 # 当训练集大于此数值会进行测试
 accuracy_level = 0.95
@@ -59,6 +59,8 @@ train_step = 0
 test_step = 0
 
 # 使用tensorboard画出训练曲线
+if os.path.exists("train_logs"):
+    shutil.rmtree("train_logs")
 writer = SummaryWriter("train_logs")
 
 # 设置模型存储目录
@@ -70,8 +72,8 @@ os.makedirs(save_path)
 start_time = time.time()
 for i in range(epoch):
     print("-----第{}轮训练开始-----".format(i + 1))
-    total_train_accuracy = 0  # 记录每次迭代的训练集正确次数
-    total_test_accuracy = 0  # 记录每次迭代的测试集正确次数
+    total_train_accuracy = 0  # 记录每次迭代的训练集准确率
+    total_train_loss = 0  # 记录每次迭代的总误差值
     # 训练步骤
     # module.train() # 设定为训练模式，仅对某些特殊层生效，具体看说明文档
     for data in train_loader:
@@ -84,6 +86,7 @@ for i in range(epoch):
         # 统计正确预测的数量
         total_train_accuracy += (outputs.argmax(1) == labels).sum()
         loss = loss_fn(outputs, labels)
+        total_train_loss += loss
         # 优化器优化模型
         optimizer.zero_grad()
         loss.backward()
@@ -95,11 +98,14 @@ for i in range(epoch):
     print("-----训练集正确率:{}-----".format(total_train_accuracy))
     print(f"-----用时:{time.time()-start_time:.2f}秒-----")
 
-    writer.add_scalar("train_loss", loss.item(), train_step)
+    # 绘制训练曲线图
+    writer.add_scalar(tag="train_loss", scalar_value=total_train_loss, global_step=i+1)
+    writer.add_scalar(tag="train_accuracy", scalar_value=total_train_accuracy, global_step=i+1)
 
     # 训练集准确度达标则进行测试
     if total_train_accuracy >= accuracy_level:
         # 测试步骤开始
+        total_test_accuracy = 0  # 记录每次迭代的测试集正确率
         total_test_loss = 0
         # module.eval() # 设定为验证模式，仅对某些特殊层生效，具体看说明文档
         with torch.no_grad():  # 去掉梯度，保证测试过程不会对网络模型的参数调优
@@ -116,7 +122,6 @@ for i in range(epoch):
         total_test_accuracy = total_test_accuracy / len(test_data)
         print("-----测试集Loss:{}-----".format(total_test_loss))
         print("-----测试集正确率:{}-----".format(total_test_accuracy))
-        writer.add_scalar("test_loss", loss.item(), test_step)
         test_step += 1
         # 测试集准确度达标则进行保存，并且退出迭代训练
         if total_test_accuracy >= accuracy_level:
