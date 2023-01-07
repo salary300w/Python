@@ -165,8 +165,10 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             )
         )
 
+
 def savemodule(MODULE, PATH, ACCURACY):
     print("-----保存模型参数-----")
+    MODULE.to(torch.device(device="cpu")) # 将模型转移至cpu保存
     torch.save(MODULE, os.path.join(PATH, "module_accuracy={}".format(ACCURACY)))
 
 
