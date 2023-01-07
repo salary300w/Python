@@ -135,6 +135,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             total_test_accuracy = total_test_accuracy / len(test_data)
             print("-----测试集Loss: {} -----".format(total_test_loss))
             print("-----测试集正确率: {} -----".format(total_test_accuracy))
+            print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
+            
             test_step += 1
             # 测试集准确度达标则进行保存，并且退出迭代训练
             if total_test_accuracy >= accuracy_level:
