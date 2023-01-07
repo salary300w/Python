@@ -64,7 +64,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
         writer = SummaryWriter("train_logs")
 
     # 设置模型存储目录
-    save_path = "model_file"
+    save_path = "module_file"
     save_path = os.path.join(save_path, str(time.time()))
     os.makedirs(save_path)
 
@@ -136,24 +136,24 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             print("-----测试集Loss: {} -----".format(total_test_loss))
             print("-----测试集正确率: {} -----".format(total_test_accuracy))
             print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
-            
+
             test_step += 1
             # 测试集准确度达标则进行保存，并且退出迭代训练
             if total_test_accuracy >= accuracy_level:
-                savemodule(MODULE=module, PATH=save_path, EPOCH=i, ACCURACY=total_test_accuracy)
+                savemodule(MODULE=module, PATH=save_path, ACCURACY=total_test_accuracy)
                 break
     # -----迭代结束-----
     print("-----训练完成-----")
 
     # 如果没有模型保存，则进行模型保存
     if not os.listdir(save_path):
-        savemodule(MODULE=module, PATH=save_path, EPOCH=i, ACCURACY=total_test_accuracy)
+        savemodule(MODULE=module, PATH=save_path, ACCURACY=total_test_accuracy)
     writer.close()
 
     # 计算训练用时并输出
     end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"-----训练总用时: {elapsed_time:.2f} 秒")
+    print(f"-----训练总用时: {elapsed_time:.2f} 秒-----")
 
     # 发送邮件
     if email:
@@ -165,9 +165,9 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             )
         )
 
-def savemodule(MODULE, PATH, EPOCH, ACCURACY):
+def savemodule(MODULE, PATH, ACCURACY):
     print("-----保存模型参数-----")
-    torch.save(MODULE, "{}/module_epoch={}_accuracy={}".format(PATH, EPOCH, ACCURACY))
+    torch.save(MODULE, os.path.join(PATH, "module_accuracy={}".format(ACCURACY)))
 
 
 if __name__ == "__main__":
