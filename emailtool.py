@@ -24,7 +24,7 @@ class Email:
         msg['To'] = self.email_addr
         s = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 邮件服务器及端口号
         try:
-            # xxxxx是邮箱的校验码，不是邮箱密码，需在qq邮箱网页内自行获取。
+            # 邮箱的校验码，需在qq邮箱网页内自行获取。
             s.login("510848570@qq.com", "rddkjicvlfeycaeh")
             s.sendmail("510848570@qq.com", self.email_addr, msg.as_string())
             print("-----邮件发送成功-----")
