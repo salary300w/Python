@@ -102,7 +102,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             train_step += 1
         # 计算本轮训练集的正确率
         total_train_accuracy = total_train_accuracy / len(train_data)
-        print("-----训练次数: {} -----,loss:{}".format(train_step, loss))
+        print("-----训练次数: {} loss: {} -----".format(train_step, loss))
         print("-----训练集正确率: {} -----".format(total_train_accuracy))
         print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
 
@@ -163,11 +163,10 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             )
         )
 
-
 def savemodule(MODULE, PATH, EPOCH, ACCURACY):
     print("-----保存模型参数-----")
     torch.save(MODULE, "{}/module_epoch={}_accuracy={}".format(PATH, EPOCH, ACCURACY))
 
 
 if __name__ == "__main__":
-    train(epoch=1, email=True)
+    train(epoch=100, email=True)
