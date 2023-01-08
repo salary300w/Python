@@ -34,6 +34,9 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
         transform=torchvision.transforms.ToTensor(),
         download=True,
     )
+    # 数据集大小
+    print("-----训练集大小= {} -----".format(len(train_data)))
+    print("-----测试集大小= {} -----".format(len(test_data)))
 
     # 数据集加载
     train_loader = DataLoader(dataset=train_data, batch_size=64, shuffle=True, num_workers=4)
