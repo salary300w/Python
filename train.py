@@ -142,7 +142,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
             # 绘制测试曲线图
             if tensorboard:
                 # writer.add_scalar(tag="test_loss", scalar_value=total_test_loss, global_step=test_step)
-                writer.add_scalar(tag="train_accuracy", scalar_value=total_test_accuracy, global_step=test_step)
+                writer.add_scalar(tag="test_accuracy", scalar_value=total_test_accuracy, global_step=test_step)
             print("-----测试集Loss: {} -----".format(total_test_loss))
             print("-----测试集正确率: {} -----".format(total_test_accuracy))
             print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
