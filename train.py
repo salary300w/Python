@@ -30,14 +30,14 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
     )
     test_data = torchvision.datasets.CIFAR10(
         root="./dataset",
-        train=True,
+        train=False,
         transform=torchvision.transforms.ToTensor(),
         download=True,
     )
 
     # 数据集加载
-    train_loader = DataLoader(dataset=train_data, batch_size=64)
-    test_loader = DataLoader(dataset=test_data, batch_size=64)
+    train_loader = DataLoader(dataset=train_data, batch_size=64, shuffle=True, num_workers=4)
+    test_loader = DataLoader(dataset=test_data, batch_size=64, shuffle=True, num_workers=4)
 
     # 创建网络模型,转移至训练设备
     module = Mymodule().to(device=dev)
