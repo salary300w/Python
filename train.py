@@ -46,8 +46,9 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
     loss_fn = nn.CrossEntropyLoss().to(device=dev)
 
     # 优化器
-    learning_rate = 1e-2
-    optimizer = torch.optim.SGD(params=module.parameters(), lr=learning_rate)
+    learning_rate = 1e-3
+    optimizer = torch.optim.Adam(params=module.parameters(), lr=learning_rate)
+    # optimizer = torch.optim.SGD(params=module.parameters(), lr=learning_rate)
 
     # 设置训练网络的一些参数
     # 记录训练的次数
@@ -78,7 +79,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
         total_test_accuracy = 0  # 记录每次迭代的测试集正确率
         total_test_loss = 0  # 记录每次迭代的总误差值
         # 训练步骤
-        # module.train() # 设定为训练模式，仅对某些特殊层生效，具体看说明文档
+        module.train() # 设定为训练模式，仅对某些特殊层生效，具体看说明文档
         for data in train_loader:
             imgs, labels = data
             # 转移至训练设备
@@ -108,13 +109,13 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
 
         # 绘制训练曲线图
         if tensorboard:
-            writer.add_scalar(tag="train_loss", scalar_value=total_train_loss, global_step=i)
+            # writer.add_scalar(tag="train_loss", scalar_value=total_train_loss, global_step=i)
             writer.add_scalar(tag="train_accuracy", scalar_value=total_train_accuracy, global_step=i)
 
         # 训练集准确度达标则进行测试
         if total_train_accuracy >= accuracy_level or i == epoch:
             # 测试步骤开始
-            # module.eval() # 设定为验证模式，仅对某些特殊层生效，具体看说明文档
+            module.eval() # 设定为验证模式，仅对某些特殊层生效，具体看说明文档
             with torch.no_grad():  # 去掉梯度，保证测试过程不会对网络模型的参数调优
                 for data in test_loader:
                     imgs, labels = data
@@ -130,14 +131,19 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
                     # 累加测试集的损失值
                     loss = loss_fn(outputs, labels)
                     total_test_loss += loss
+            test_step += 1
 
             # 计算测试集正确率
             total_test_accuracy = total_test_accuracy / len(test_data)
+
+            # 绘制测试曲线图
+            if tensorboard:
+                # writer.add_scalar(tag="test_loss", scalar_value=total_test_loss, global_step=test_step)
+                writer.add_scalar(tag="train_accuracy", scalar_value=total_test_accuracy, global_step=test_step)
             print("-----测试集Loss: {} -----".format(total_test_loss))
             print("-----测试集正确率: {} -----".format(total_test_accuracy))
             print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
 
-            test_step += 1
             # 测试集准确度达标则进行保存，并且退出迭代训练
             if total_test_accuracy >= accuracy_level:
                 savemodule(MODULE=module, PATH=save_path, ACCURACY=total_test_accuracy)
