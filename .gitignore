@@ -2,4 +2,4 @@ __pycache__
 .vscode
 train_logs
 module_file
-dataset
+data2train

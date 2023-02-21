@@ -9,7 +9,7 @@ from module import *
 from emailtool import *
 
 
-def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", accuracy_level=0.95, tensorboard=True):
+def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", accuracy_level=1, tensorboard=True):
 
     # epoch:迭代次数
     # dev:训练设备
