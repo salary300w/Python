@@ -1,5 +1,5 @@
-import cv2
 import numpy as np
+
 
 def add_gaussian_noise(image, mean=0.5, std=10):
     """
@@ -8,13 +8,13 @@ def add_gaussian_noise(image, mean=0.5, std=10):
     Args:
         image: 待添加噪声的图像
         mean: 高斯分布的均值，默认为0
-        std: 高斯分布的标准差，默认为10
+        std: 高斯分布的方差，默认为10
 
     Returns:
         添加高斯噪声后的图像
     """
     # 生成与原图像形状相同的高斯噪声
-    noise = np.random.normal(mean, std, image.shape)
+    noise = np.random.normal(loc=mean, scale=std, size=image.shape)
     # 将噪声添加到原图像中
     noisy_image = image + noise
     # 将像素值限制在0-255之间
@@ -22,6 +22,7 @@ def add_gaussian_noise(image, mean=0.5, std=10):
     # 将图像数据类型转换为整型
     noisy_image = noisy_image.astype(np.uint8)
     return noisy_image
+
 
 def add_salt_and_pepper_noise(image, prob=0.01):
     """
@@ -44,16 +45,3 @@ def add_salt_and_pepper_noise(image, prob=0.01):
     noisy_image[random_y, random_x] = [0, 0, 0]
     noisy_image[random_y, random_x] = [255, 255, 255]
     return noisy_image
-
-# 读取图像
-image = cv2.imread('Data/Pic.png')
-
-# 添加高斯噪声
-gaussian_noisy_image = add_gaussian_noise(image)
-# 添加椒盐噪声
-salt_and_pepper_noisy_image = add_salt_and_pepper_noise(image)
-
-# 存储原图和处理后的图像
-cv2.imwrite('Original_Image.png', image)
-cv2.imwrite('Gaussian_Noise_Image.png', gaussian_noisy_image)
-cv2.imwrite('Salt_and_Pepper_noise.png', salt_and_pepper_noisy_image)
