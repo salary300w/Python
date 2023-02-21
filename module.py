@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 
-class Mymodule(nn.Module):
+class Res_U_Net(nn.Module):
     def __init__(self):
         super(Mymodule, self).__init__()
         self.layer_pooling = nn.MaxPool2d(kernel_size=2, stride=1, padding=1, dilation=2)

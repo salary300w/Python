@@ -9,7 +9,7 @@ from module import *
 from emailtool import *
 
 
-def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", accuracy_level=0.95, tensorboard=True):
+def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", accuracy_level=1, tensorboard=True):
 
     # epoch:迭代次数
     # dev:训练设备
@@ -43,7 +43,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
     test_loader = DataLoader(dataset=test_data, batch_size=64, shuffle=True, num_workers=4)
 
     # 创建网络模型,转移至训练设备
-    module = Mymodule().to(device=dev)
+    module = Res_U_Net().to(device=dev)
 
     # 损失函数,转移至训练设备
     loss_fn = nn.CrossEntropyLoss().to(device=dev)
