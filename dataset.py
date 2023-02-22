@@ -13,9 +13,9 @@ def read_voc_images(data_dir, is_train=True):
     features, labels = [], []
     for i, fname in enumerate(images):
         features.append(torchvision.io.read_image(os.path.join(
-            data_dir, 'JPEGImages', f'{fname}.jpg')))
+            data_dir, 'JPEGImages', f'{fname}.jpg')).to(dtype=torch.float32))
         labels.append(torchvision.io.read_image(os.path.join(
-            data_dir, 'SegmentationClass', f'{fname}.png'), mode))
+            data_dir, 'SegmentationClass', f'{fname}.png'), mode).to(dtype=torch.float32))
     return features, labels
 
 
