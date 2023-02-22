@@ -23,8 +23,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     dev = torch.device(device=dev if torch.cuda.is_available() else "cpu")
 
     # 数据集准备
-    train_data = dataset(is_train=True,data_dir='data2train')
-    test_data = dataset(is_train=False,data_dir='data2train')
+    train_data = dataset(is_train=True, data_dir='data2train')
+    test_data = dataset(is_train=False, data_dir='data2train')
 
     # 数据集大小
     print("-----训练集大小= {} -----".format(len(train_data)))
@@ -72,7 +72,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
         total_train_loss = 0  # 记录每次迭代的总误差值
         total_test_loss = 0  # 记录每次迭代的总误差值
         # 训练步骤
-        module.train() # 设定为训练模式，仅对某些特殊层生效，具体看说明文档
+        module.train()  # 设定为训练模式，仅对某些特殊层生效，具体看说明文档
         for data in train_loader:
             imgs, labels = data
             # 转移至训练设备
@@ -90,19 +90,20 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            train_step += 1
         # 计算本轮训练集的正确率
-        print("-----训练次数: {} loss: {} -----".format(train_step, total_train_loss))
-        print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
+        print("-----第 {} 轮训练Loss: {} -----".format(i, total_train_loss))
+        if i % 10 == 0:
+            print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
 
         # 绘制训练曲线图
         if tensorboard:
             writer.add_scalar(tag="total_train_loss", scalar_value=total_train_loss, global_step=i)
 
         # 训练集准确度达标则进行测试
-        if i == epoch:
+        if i == epoch or i % 5 == 0:
             # 测试步骤开始
-            module.eval() # 设定为验证模式，仅对某些特殊层生效，具体看说明文档
+            print("-----开始测试-----")
+            module.eval()  # 设定为验证模式，仅对某些特殊层生效，具体看说明文档
             with torch.no_grad():  # 去掉梯度，保证测试过程不会对网络模型的参数调优
                 for data in test_loader:
                     imgs, labels = data
@@ -120,27 +121,28 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
             # 绘制测试曲线图
             if tensorboard:
                 writer.add_scalar(tag="test_loss", scalar_value=total_test_loss, global_step=test_step)
-            print("-----测试集Loss: {} -----".format(total_test_loss))
-            print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
+            print("-----第 {} 轮测试Loss: {} -----".format(test_step, total_test_loss))
+            if i % 10 == 0:
+                print(f"-----总用时: {time.time()-start_time:.2f} 秒-----")
     # -----迭代结束-----
+    # 计算训练用时并输出
+    end_time = time.time()
+    elapsed_time = end_time - start_time
     print("-----训练完成-----")
+    print(f"-----总用时: {elapsed_time:.2f} 秒-----")
+    print("-----总迭代次数: {} -----".format(i))
 
     # 如果没有模型保存，则进行模型保存
     if not os.listdir(save_path):
         savemodule(MODULE=module, PATH=save_path, LOSS=total_test_loss)
     writer.close()
 
-    # 计算训练用时并输出
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"-----训练总用时: {elapsed_time:.2f} 秒-----")
-
     # 发送邮件
     if email:
-        print("-----发送邮件-----")
+        print("-----发送邮件通知-----")
         sendemail = Email(email_addr)
         sendemail.send(
-            "训练完成<br/>测试集Loss:{}<br/>迭代次数:{}<br/>训练总次数:{}<br/>用时:{}秒".format(
+            "训练完成<br/>测试集Loss: {}<br/>迭代次数: {}<br/>训练总次数: {}<br/>用时: {} 秒".format(
                 total_test_loss, i, train_step, elapsed_time
             )
         )
