@@ -1,15 +1,25 @@
 import os
 
-folder_path = "D:\workspace\Python\datadealbypython" # 替换为实际文件夹路径
-new_name_prefix = "add_noise" # 替换为新文件名前缀
+folder_path = "D:\workspace\Python\数据增强\原数据\承插不到位"  # 替换为实际文件夹路径
+file_name = "cc"
+i = 1
+# 遍历文件夹
+for filename in os.listdir(folder_path):
+    file_path = os.path.join(folder_path, filename)
+    new_file_name = file_name+str(i)+".jpg"
+    i = i+1
+    if os.path.isfile(file_path):
+        new_file_path = os.path.join(folder_path, new_file_name)
+        os.rename(file_path, new_file_path)
 
-# 遍历指定文件夹及其子文件夹内的所有文件
-for root, dirs, files in os.walk(folder_path):
-    for file_name in files:
-        # 构造新文件名，新文件名由前缀 + 原文件名组成
-        new_file_name = new_name_prefix + file_name
-        # 构造原文件和新文件的完整路径
-        old_file_path = os.path.join(root, file_name)
-        new_file_path = os.path.join(root, new_file_name)
-        # 重命名文件
-        os.rename(old_file_path, new_file_path)
+folder_path = os.path.join(folder_path, "SegmentationClassPNG")
+
+i = 1
+# 遍历文件夹
+for filename in os.listdir(folder_path):
+    file_path = os.path.join(folder_path, filename)
+    new_file_name = file_name+str(i)+".png"
+    i = i+1
+    if os.path.isfile(file_path):
+        new_file_path = os.path.join(folder_path, new_file_name)
+        os.rename(file_path, new_file_path)
