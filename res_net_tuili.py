@@ -6,7 +6,7 @@ from PIL import Image
 import time
 import os
 import shutil
-from dataset import *
+from VOCSegDataset import *
 from res_net_module import *
 from emailtool import *
 

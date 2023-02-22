@@ -19,13 +19,13 @@ def read_voc_images(data_dir, is_train=True):
     return features, labels
 
 
-class dataset(torch.utils.data.Dataset):
+class VOCSegDataset(torch.utils.data.Dataset):
     """一个用于加载VOC数据集的自定义数据集"""
 
-    def __init__(self, is_train, data_dir, settransform=None):
+    def __init__(self, is_train, voc_dir, settransform=None):
         self.transform = settransform
         self.features, self.labels = read_voc_images(
-            data_dir, is_train=is_train)
+            voc_dir, is_train=is_train)
 
     def __getitem__(self, idx):
         if self.transform is not None:

@@ -1,11 +1,12 @@
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from PIL import Image
 import torch
 import torchvision
 import time
 import os
 import shutil
-from dataset import *
+from VOCSegDataset import *
 from res_net_module import *
 from emailtool import *
 
@@ -18,6 +19,11 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     # email_addr:接收通知的邮箱地址
     # accuracy_level:当训练集准确率大于accuracy_level,会进行测试。测试集准确率大于accuracy_level会进行模型保存并结束训练
     # tensorboard:是否使用tensorboard绘制训练曲线
+    mean = [0.5, 0.5, 0.5]
+    std = [0.5, 0.5, 0.5]
+    normalize = torchvision.transforms.Normalize(mean=mean, std=std)
+    denormalize = torchvision.transforms.Normalize(mean=[-m/s for m, s in zip(mean, std)],
+                                   std=[1/s for s in std])
 
     learning_rate = 1e-3
     model_batch_size=2
@@ -26,8 +32,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     dev = torch.device(device=dev if torch.cuda.is_available() else "cpu")
 
     # 数据集准备
-    train_data = dataset(is_train=True, data_dir='data2train')
-    test_data = dataset(is_train=False, data_dir='data2train')
+    train_data = VOCSegDataset(is_train=True,voc_dir='data2train',settransform=normalize)
+    test_data = VOCSegDataset(is_train=False, voc_dir='data2train',settransform=normalize)
 
     # 数据集大小
     print("-----训练集大小= {} -----".format(len(train_data)))
