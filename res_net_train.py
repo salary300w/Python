@@ -21,9 +21,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     # tensorboard:是否使用tensorboard绘制训练曲线
     mean = [0.5, 0.5, 0.5]
     std = [0.5, 0.5, 0.5]
+    # 归一化处理
     normalize = torchvision.transforms.Normalize(mean=mean, std=std)
-    denormalize = torchvision.transforms.Normalize(mean=[-m/s for m, s in zip(mean, std)],
-                                   std=[1/s for s in std])
 
     learning_rate = 1e-3
     model_batch_size=2
@@ -33,7 +32,7 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
 
     # 数据集准备
     train_data = VOCSegDataset(is_train=True,voc_dir='data2train',settransform=normalize)
-    test_data = VOCSegDataset(is_train=False, voc_dir='data2train',settransform=normalize)
+    test_data = VOCSegDataset(is_train=False, voc_dir='data2train')
 
     # 数据集大小
     print("-----训练集大小= {} -----".format(len(train_data)))

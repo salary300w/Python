@@ -17,7 +17,11 @@ def res_net_out(Module_dir,input_dir):
     '''
     res_net_module=torch.load(Module_dir)
     out_images=res_net_module(torchvision.io.read_image(input_dir).to(dtype=torch.float32))
-    image = Image.fromarray((out_images).byte().numpy().transpose(1, 2, 0))
+    mean = [0.5, 0.5, 0.5]
+    std = [0.5, 0.5, 0.5]
+    # 反归一化
+    denormalize = torchvision.transforms.Normalize(mean=[-m/s for m, s in zip(mean, std)],std=[1/s for s in std])
+    image=Image.fromarray(denormalize(out_images).permute(1, 2, 0).numpy().astype('uint8'))
     return image
 
 if __name__ == "__main__":
