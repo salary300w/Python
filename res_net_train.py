@@ -48,9 +48,6 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     # optimizer = torch.optim.SGD(params=module.parameters(), lr=learning_rate)
 
     # 设置训练网络的一些参数
-    # 记录训练的次数
-
-    train_step = 0
 
     # 记录测试的次数
     test_step = 0
@@ -144,8 +141,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
         print("-----发送邮件通知-----")
         sendemail = Email(email_addr)
         sendemail.send(
-            "训练完成<br/>测试集Loss: {}<br/>迭代次数: {}<br/>训练总次数: {}<br/>用时: {} 秒".format(
-                total_test_loss, i, train_step, elapsed_time
+            "训练完成<br/>测试集Loss: {}<br/>迭代次数: {}<br/>用时: {} 秒".format(
+                total_test_loss, i, elapsed_time
             )
         )
 
@@ -157,4 +154,4 @@ def savemodule(MODULE, PATH, LOSS):
 
 
 if __name__ == "__main__":
-    train(epoch=1, email=True)
+    train(epoch=30, email=True)
