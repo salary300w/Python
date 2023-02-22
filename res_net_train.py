@@ -19,6 +19,9 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     # accuracy_level:当训练集准确率大于accuracy_level,会进行测试。测试集准确率大于accuracy_level会进行模型保存并结束训练
     # tensorboard:是否使用tensorboard绘制训练曲线
 
+    learning_rate = 1e-3
+    model_batch_size=2
+
     # 定义训练的设备
     dev = torch.device(device=dev if torch.cuda.is_available() else "cpu")
 
@@ -31,8 +34,8 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     print("-----测试集大小= {} -----".format(len(test_data)))
 
     # 数据集加载
-    train_loader = DataLoader(dataset=train_data, batch_size=8, shuffle=True, num_workers=4)
-    test_loader = DataLoader(dataset=test_data, batch_size=8, shuffle=True, num_workers=4)
+    train_loader = DataLoader(dataset=train_data, batch_size=model_batch_size, shuffle=True, num_workers=4)
+    test_loader = DataLoader(dataset=test_data, batch_size=model_batch_size, shuffle=True, num_workers=4)
 
     # 创建网络模型,转移至训练设备
     module = Res_U_Net().to(device=dev)
@@ -41,7 +44,6 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", ten
     loss_fn = nn.MSELoss().to(device=dev)
 
     # 优化器
-    learning_rate = 1e-3
     optimizer = torch.optim.Adam(params=module.parameters(), lr=learning_rate)
     # optimizer = torch.optim.SGD(params=module.parameters(), lr=learning_rate)
 
