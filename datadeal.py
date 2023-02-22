@@ -1,6 +1,16 @@
 import os
 import shutil
-import torchvision
+
+
+'''
+设置：
+    train_images
+    train_labels
+    val_images
+    val_labels
+运行后生成data2train文件夹，用于送入模型训练
+'''
+
 
 # 移动/复制source_dir所有文件至target_dir
 def move_file(source_dir, target_dir, copy=True):
@@ -60,9 +70,9 @@ def make_dataset(train_path, train_label_path, val_path, val_label_path):
     move_file(val_label_path, SegClass_path)
 
 if __name__ == "__main__":
-    train_images = 'data\\train\images'
-    train_labels = 'data\\train\labels'
-    val_images = 'data\\val\images'
-    val_labels = 'data\\val\labels'
+    train_images = 'data/train/images'
+    train_labels = 'data/train/labels'
+    val_images = 'data/val/images'
+    val_labels = 'data/val/labels'
     make_dataset(train_path=train_images, train_label_path=train_labels,
                  val_path=val_images, val_label_path=val_labels)

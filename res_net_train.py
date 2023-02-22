@@ -5,7 +5,8 @@ import torchvision
 import time
 import os
 import shutil
-from module import *
+from dataset import *
+from res_net_module import *
 from emailtool import *
 
 
@@ -22,28 +23,19 @@ def train(epoch=200, dev="cuda", email=True, email_addr="Atm991014@163.com", acc
     dev = torch.device(device=dev if torch.cuda.is_available() else "cpu")
 
     # 数据集准备
-    train_data = torchvision.datasets.CIFAR10(
-        root="./dataset",
-        train=True,
-        transform=torchvision.transforms.ToTensor(),
-        download=True,
-    )
-    test_data = torchvision.datasets.CIFAR10(
-        root="./dataset",
-        train=False,
-        transform=torchvision.transforms.ToTensor(),
-        download=True,
-    )
+    train_data = dataset(is_train=True,data_dir='data2train')
+    test_data = dataset(is_train=False,data_dir='data2train')
+
     # 数据集大小
     print("-----训练集大小= {} -----".format(len(train_data)))
     print("-----测试集大小= {} -----".format(len(test_data)))
 
     # 数据集加载
-    train_loader = DataLoader(dataset=train_data, batch_size=64, shuffle=True, num_workers=4)
-    test_loader = DataLoader(dataset=test_data, batch_size=64, shuffle=True, num_workers=4)
+    train_loader = DataLoader(dataset=train_data, batch_size=8, shuffle=True, num_workers=4)
+    test_loader = DataLoader(dataset=test_data, batch_size=8, shuffle=True, num_workers=4)
 
     # 创建网络模型,转移至训练设备
-    module = Mymodule().to(device=dev)
+    module = Res_U_Net().to(device=dev)
 
     # 损失函数,转移至训练设备
     loss_fn = nn.CrossEntropyLoss().to(device=dev)
